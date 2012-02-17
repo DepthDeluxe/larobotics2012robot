@@ -3,20 +3,25 @@
 
 #include "WPILib.h"
 
+#define LO_GEAR 0
+#define HI_GEAR 1
+
 class DriveBase
 {
 private:
-	float m_leftSpeed;
-	float m_rightSpeed;
+	float m_leftPower;
+	float m_rightPower;
+	
+	int m_gear;
 	
 public:
-	DriveBase(Encoder*);
+	DriveBase();
 	
-	void ProcessAuto();
-	void ProcessManual();
+	// control variables
+	void Drive(float,float);
+	void ChangeGear(int);
 	
-	void SetValuesAuto(PIDController*);
-	void SetValuesManual(Victor*, Victor*);
+	void SetValues(Victor*, Victor*, Solenoid*, Solenoid*);
 };
 
 #endif /*DRIVEBASE_H_*/
