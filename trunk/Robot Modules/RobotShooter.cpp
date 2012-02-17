@@ -2,6 +2,7 @@
 #define ROBOTSHOOTER_CPP_
 
 #include "RobotShooter.h"
+#include "Utils.h"
 
 RobotShooter::RobotShooter()
 {
@@ -27,14 +28,14 @@ void RobotShooter::SetValuesAuto(PIDController* panControl, PIDController* tiltC
 {
 	panControl->SetSetpoint(m_panSetpoint);
 	tiltControl->SetSetpoint(m_tiltSetpoint);
-	shootControl->SetSpeed(m_shootPower);
+	shootControl->Set(m_shootPower);
 }
 
 void RobotShooter::SetValuesManual(Victor* panVictor, Victor* tiltVictor, Victor* shootVictor)
 {
-	panVictor->SetSpeed(m_panSpeed);
-	tiltVictor->SetSpeed(m_panSpeed);
-	shootVictor->SetSpeed(m_shootPower);
+	panVictor->Set(m_panSpeed);
+	tiltVictor->Set(m_panSpeed);
+	shootVictor->Set(m_shootPower);
 }
 
 #endif /*ROBOTSHOOTER_CPP_*/
