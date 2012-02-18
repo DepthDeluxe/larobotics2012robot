@@ -7,8 +7,9 @@
 #include "Libs/QueueManager.h"
 #include "Libs/Sockets.h"
 
-#define LO_GEAR 0
-#define HI_GEAR 1
+// Robot Modules
+#include "Robot Modules/DriveBase.h"
+#include "Robot Modules/RobotShooter.h"
 
 class Coriolis: public SimpleRobot {
 
@@ -22,19 +23,20 @@ public:
         void Teleop(void);
 
 private:
-        Task autoThread;
-        Task controlThread;
-        Task serverThread;
-        SEM_ID semaphore;
-        Victor leftDrive, rightDrive;
-        Joystick left, right;
-        Solenoid loGear, hiGear;
+        Task		autoThread;
+        Task		controlThread;
+        Task		serverThread;
+        SEM_ID		semaphore;
+        Victor		leftDrive, rightDrive;
+        Joystick	left, right;
+        Solenoid	loGear, hiGear;
         
-        /* shooter motors */
+    	/* shooter motors */
         Victor	panVictor, tiltVictor;
+        Victor	shootVictor;
         
         /* encoders */
-        Encoder		panEncoder, tiltEncoder;
+        Encoder	panEncoder, tiltEncoder;
         
         /* pid control loops */
         PIDController	panController;
@@ -42,9 +44,10 @@ private:
         
         /* Robot specific stuff. */
         int imageX, imageY;
-        int gear;
-        float leftPower, rightPower;
-        float panSetpoint, tiltSetpoint;
+        
+        // robot modules declaration
+        DriveBase		robotDrive;
+        RobotShooter	robotShooter;
 };
 
 #endif /*CORIOLIS_H_*/
