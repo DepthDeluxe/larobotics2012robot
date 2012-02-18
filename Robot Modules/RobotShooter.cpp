@@ -34,6 +34,11 @@ void RobotShooter::ProcessManual(int panSpeed, int tiltSpeed, int shootPower)
 	m_intakeBalls = false;
 }
 
+void RobotShooter::EnableShooter(bool isactivated)
+{
+	m_shooterOn = isactivated;
+}
+
 void RobotShooter::Shoot()
 {
 	m_shoot = true;
@@ -41,12 +46,39 @@ void RobotShooter::Shoot()
 
 void RobotShooter::ControlThread()
 {
-	m_panControl->SetSetpoint(m_panSetpoint);
-	m_tiltControl->SetSetpoint(m_tiltSetpoint);
-	m_shootVictor->Set(m_shootPower);
+	if (m_isAutoAim)
+	{
+		// check to see if control is not enabled
+		if (!m_panControl->IsEnabled() || !m_tiltControl->IsEnabled())
+		{
+			m_panControl->Enable();
+			m_panControl->Enable();
+		}
+		
+		// set setpoints on victors
+		m_panControl->SetSetpoint(m_panSetpoint);
+		m_tiltControl->SetSetpoint(m_tiltSetpoint);
+	}
+	else
+	{
+		// check to see if control is enabled
+		if (m_panControl->IsEnabled() || m_tiltControl->IsEnabled())
+		{
+			m_panControl->Disable();
+			m_tiltControl->Disable();
+		}
+		
+		// set victor values
+		m_panVictor->Set(m_panSpeed);
+		m_tiltVictor->Set(m_panSpeed);
+	}
 	
-	m_panVictor->Set(m_panSpeed);
-	m_tiltVictor->Set(m_panSpeed);
+	// set the shooting power if power turned on
+	// and if not, turn it off
+	if (m_shooterOn)
+		m_shootVictor->Set(m_shootPower);
+	else
+		m_shootVictor->Set(0.0);
 }
 
 #endif /*ROBOTSHOOTER_CPP_*/

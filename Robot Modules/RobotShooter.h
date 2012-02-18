@@ -36,6 +36,7 @@ private:
 	// socket members goes here
 	bool m_newData;
 	bool m_isAutoAim;
+	bool m_shooterOn;
 	
 	bool m_shoot;
 	bool m_intakeBalls;
@@ -45,6 +46,8 @@ public:
 	
 	void ProcessAuto();
 	void ProcessManual(int, int, int);
+	
+	void EnableShooter(bool);
 	void Shoot();
 	
 	void ControlThread();
