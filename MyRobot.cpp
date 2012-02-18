@@ -25,11 +25,13 @@ Coriolis::Coriolis(void) :
 	controlThread("controlThread", (FUNCPTR) startThread),
 	serverThread("serverThread", (FUNCPTR) startThread),
 	leftDrive(4), rightDrive(5), left(1), right(2), loGear(5), hiGear(4),
-	gear(HI_GEAR), leftPower(0.0), rightPower(0.0),
 	panVictor(6), tiltVictor(7),
+	shootVictor(8),
 	panEncoder(5,6), tiltEncoder(7,8),
 	panController(0.02, 0.0, 0.007, &panEncoder, &panVictor),
-	tiltController(0.02, 0.0, 0.007, &tiltEncoder, &tiltVictor)
+	tiltController(0.02, 0.0, 0.007, &tiltEncoder, &tiltVictor),
+	robotDrive(&leftDrive, &rightDrive, &loGear, &hiGear),
+	robotShooter(&panVictor, &tiltVictor, &shootVictor, &panController, &tiltController)
 {
 	printf("CORIOLIS: Initializing.\n");
 	semaphore = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);

@@ -10,15 +10,14 @@ void Coriolis::Teleop(void)
 	
 	/* Operator drive. */
 	CRITICAL_REGION(semaphore)
-	leftPower = -left.GetY();
-	rightPower = right.GetY();
+	robotDrive.Drive(left.GetY(), right.GetY());
 	END_REGION
 	
 	/* Lo/Hi gear handling. */
 	CRITICAL_REGION(semaphore)
 	if (left.GetTrigger())
-		gear = LO_GEAR;
+		robotDrive.ChangeGear(LO_GEAR);
 	else if (right.GetTrigger())
-		gear = HI_GEAR;
+		robotDrive.ChangeGear(HI_GEAR);
 	END_REGION
 }
