@@ -9,26 +9,11 @@ void Coriolis::ControlTask(void) {
 	while (true) {
 		CRITICAL_REGION(semaphore)
 		
-		/* Handle drive. */
-		leftDrive.Set(victor_linearize(leftPower));
-		rightDrive.Set(victor_linearize(rightPower));
-		/*****************/
+		// handle drivebase
+		robotDrive.ControlThread();
 		
-		/* Handle transmission. */
-		if (gear == HI_GEAR)
-		{
-			loGear.Set(true);
-			hiGear.Set(false);
-		}
-		else if (gear == LO_GEAR)
-		{
-			loGear.Set(false);
-			hiGear.Set(true);
-		}
-		
-		/* handle PID Controls */
-		panController.SetSetpoint(panSetpoint);
-		tiltController.SetSetpoint(tiltSetpoint);
+		// handle robotshooter
+		robotShooter.ControlThread();
 		
 		END_REGION
 		/************************/
