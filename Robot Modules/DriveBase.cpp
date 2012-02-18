@@ -2,18 +2,19 @@
 #define DRIVEBASE_CPP_
 
 #include "DriveBase.h"
-#include "Utils.h"
+#include "../Utils.h"
 
-DriveBase::DriveBase()
+DriveBase::DriveBase(Victor* leftVictor, Victor* rightVictor, Solenoid* loGear, Solenoid* hiGear)
 {
+	// fill pointers
+	m_leftVictor = leftVictor;
+	m_rightVictor = rightVictor;
+	m_loGear = loGear;
+	m_hiGear = hiGear;
+	
 	m_leftPower = 0;
 	m_rightPower = 0;
 	m_gear = 0;
-}
-
-void DriveBase::ProcessAuto()
-{
-	// drive autonomous code goes here
 }
 
 void DriveBase::Drive(float leftPower, float rightPower)
@@ -23,27 +24,34 @@ void DriveBase::Drive(float leftPower, float rightPower)
 	m_rightPower = rightPower;
 }
 
-void DriveBase::SetValuesAuto(PIDController* drivePID)
+void DriveBase::ChangeGear(int gear)
 {
-	
+	// only adjust gear value if new set value is valid
+	if (gear == HI_GEAR | LO_GEAR)
+		m_gear = gear;
 }
 
-void DriveBase::SetValues(Victor* leftVictor, Victor* rightVictor, Solenoid* loGear, Solenoid* hiGear)
+void DriveBase::Autonomous()
+{
+	// drive autonomous code goes here
+}
+
+void DriveBase::ControlThread()
 {
 	// set victors
-	leftVictor->Set(m_leftPower);
-	rightVictor->Set(m_rightPower);
+	m_leftVictor->Set(m_leftPower);
+	m_rightVictor->Set(m_rightPower);
 	
 	// set gears
-	if (gear == HI_GEAR)
+	if (m_gear == HI_GEAR)
 	{
-		loGear->Set(false);
-		hiGear->Set(true);
+		m_loGear->Set(false);
+		m_hiGear->Set(true);
 	}
 	else
 	{
-		loGear->Set(true);
-		hiGear->Set(false);
+		m_loGear->Set(true);
+		m_hiGear->Set(false);
 	}
 }
 

@@ -9,19 +9,27 @@
 class DriveBase
 {
 private:
+	// pointers to all that this module uses
+	Victor*		m_leftVictor;
+	Victor*		m_rightVictor;
+	Solenoid*	m_loGear;
+	Solenoid*	m_hiGear;
+	
 	float m_leftPower;
 	float m_rightPower;
 	
 	int m_gear;
 	
 public:
-	DriveBase();
+	DriveBase(Victor*, Victor*, Solenoid*, Solenoid*);
 	
 	// control variables
 	void Drive(float,float);
 	void ChangeGear(int);
 	
-	void SetValues(Victor*, Victor*, Solenoid*, Solenoid*);
+	void Autonomous();
+	
+	void ControlThread();
 };
 
 #endif /*DRIVEBASE_H_*/
