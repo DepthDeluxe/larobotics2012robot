@@ -9,14 +9,14 @@ void Coriolis::ControlTask(void) {
 	while (true) {
 		CRITICAL_REGION(semaphore)
 		
-		// update pidtuner
-		pidTuner.Run();
-		
 		// handle drivebase
 		robotDrive.ControlThread();
 		
 		// handle robotshooter
 		robotShooter.ControlThread();
+		
+		// update pidtuner
+		pidTuner.Run();
 		
 		END_REGION
 		/************************/
