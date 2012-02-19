@@ -1,5 +1,5 @@
 #include "../Coriolis.h"
-#include "../Utils.h"
+#include "../Utility/Utils.h"
 #include "WPILib.h"
 
 void Coriolis::ControlTask(void) {
@@ -8,6 +8,9 @@ void Coriolis::ControlTask(void) {
 
 	while (true) {
 		CRITICAL_REGION(semaphore)
+		
+		// update pidtuner
+		pidTuner.Run();
 		
 		// handle drivebase
 		robotDrive.ControlThread();
