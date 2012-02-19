@@ -24,6 +24,7 @@ private:
 	Victor*		m_panVictor;
 	Victor*		m_tiltVictor;
 	Victor*		m_shootVictor;
+	Victor*		m_rollerIntake;
 	
 	// PID controllers
 	PIDController*	m_tiltControl;
@@ -42,11 +43,12 @@ private:
 	bool m_intakeBalls;
 	
 public:
-	RobotShooter(Victor*, Victor*, Victor*, PIDController*, PIDController*);
+	RobotShooter(Victor*, Victor*, Victor*, Victor*, PIDController*, PIDController*);
 	
 	void ProcessAuto();
 	void ProcessManual(int, int, int);
 	
+	void SetShooterSpeed(float);
 	void EnableShooter(bool);
 	void Shoot();
 	
