@@ -11,6 +11,9 @@
 #include "Robot Modules/DriveBase.h"
 #include "Robot Modules/RobotShooter.h"
 
+// Utilities
+#include "Utility/PIDTuner.h"
+
 class Coriolis: public SimpleRobot {
 
 public:
@@ -35,8 +38,9 @@ private:
         Victor	panVictor, tiltVictor;
         Victor	shootVictor;
         
-        /* encoders */
-        Encoder	panEncoder, tiltEncoder;
+        /* input devices */
+        Encoder			panEncoder;
+        AnalogChannel	tiltPot;
         
         /* pid control loops */
         PIDController	panController;
@@ -48,6 +52,9 @@ private:
         // robot modules declaration
         DriveBase		robotDrive;
         RobotShooter	robotShooter;
+        
+        // debugging
+        PIDTuner pidTuner;
 };
 
 #endif /*CORIOLIS_H_*/
