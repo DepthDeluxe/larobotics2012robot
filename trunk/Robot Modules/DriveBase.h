@@ -21,14 +21,15 @@ private:
 	int m_gear;
 	
 public:
+	// constructor
 	DriveBase(Victor*, Victor*, Solenoid*, Solenoid*);
 	
 	// control variables
 	void Drive(float,float);
-	void ChangeGear(int);
+	void SetGear(int);
 	
+	// task functions
 	void Autonomous();
-	
 	void ControlThread();
 };
 

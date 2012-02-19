@@ -24,12 +24,12 @@ Coriolis::Coriolis(void) :
 	autoThread("autonomousThread", (FUNCPTR) startThread),
 	controlThread("controlThread", (FUNCPTR) startThread),
 	serverThread("serverThread", (FUNCPTR) startThread),
-	leftDrive(4), rightDrive(5), left(1), right(2), loGear(5), hiGear(4),
+	leftDrive(4), rightDrive(5), left(1), right(2), loGear(4), hiGear(5),
 	panVictor(6), tiltVictor(7),
 	shootVictor(8),
 	panEncoder(5,6), tiltEncoder(7,8),
-	panController(0.02, 0.0, 0.007, &panEncoder, &panVictor),
-	tiltController(0.02, 0.0, 0.007, &tiltEncoder, &tiltVictor),
+	panController(0, 0, 0, &panEncoder, &panVictor),
+	tiltController(0, 0, 0, &tiltEncoder, &tiltVictor),
 	robotDrive(&leftDrive, &rightDrive, &loGear, &hiGear),
 	robotShooter(&panVictor, &tiltVictor, &shootVictor, &panController, &tiltController)
 {
