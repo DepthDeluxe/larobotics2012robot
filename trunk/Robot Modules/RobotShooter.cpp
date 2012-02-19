@@ -5,12 +5,13 @@
 #include "../Utility/Utils.h"
 
 RobotShooter::RobotShooter(Victor* panVictor, Victor* tiltVictor, Victor* shootVictor,
-		PIDController* panControl, PIDController* tiltControl)
+		Victor* rollerIntake, PIDController* panControl, PIDController* tiltControl)
 {
 	// save pointers
 	m_panVictor = panVictor;
 	m_tiltVictor = tiltVictor;
 	m_shootVictor = shootVictor;
+	m_rollerIntake = rollerIntake;
 	m_panControl = panControl;
 	m_tiltControl = tiltControl;
 	
@@ -38,6 +39,11 @@ void RobotShooter::ProcessManual(int panSpeed, int tiltSpeed, int shootPower)
 	m_intakeBalls = false;
 }
 
+void RobotShooter::SetShooterSpeed(float speed)
+{
+	m_shootPower = speed;
+}
+
 void RobotShooter::EnableShooter(bool isactivated)
 {
 	m_shooterOn = isactivated;
@@ -59,7 +65,7 @@ void RobotShooter::ControlThread()
 			m_panControl->Enable();
 		}
 		
-		// set setpoints on victors
+		// set setpoints on pan and tilt controls
 		m_panControl->SetSetpoint(m_panSetpoint);
 		m_tiltControl->SetSetpoint(m_tiltSetpoint);
 	}
@@ -83,6 +89,16 @@ void RobotShooter::ControlThread()
 		m_shootVictor->Set(victor_linearize(m_shootPower));
 	else
 		m_shootVictor->Set(0.0);
+	
+	// roller code
+	if (m_shoot)
+	{
+		m_shootVictor->Set(victor_linearize(0.75));
+	}
+	else
+	{
+		m_shootVictor->Set(0.0);
+	}
 }
 
 #endif /*ROBOTSHOOTER_CPP_*/
