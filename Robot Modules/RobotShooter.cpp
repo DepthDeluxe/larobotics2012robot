@@ -14,6 +14,10 @@ RobotShooter::RobotShooter(Victor* panVictor, Victor* tiltVictor, Victor* shootV
 	m_panControl = panControl;
 	m_tiltControl = tiltControl;
 	
+	// set PID values
+	m_panControl->SetPID(RS_PAN_P, RS_PAN_I, RS_PAN_D);
+	m_tiltControl->SetPID(RS_TILT_P, RS_TILT_I, RS_TILT_D);
+	
 	// init variables
 	m_panSetpoint = 0;
 	m_tiltSetpoint = 0;
@@ -69,14 +73,14 @@ void RobotShooter::ControlThread()
 		}
 		
 		// set victor values
-		m_panVictor->Set(m_panSpeed);
-		m_tiltVictor->Set(m_panSpeed);
+		m_panVictor->Set(victor_linearize(m_panSpeed));
+		m_tiltVictor->Set(victor_linearize(m_panSpeed));
 	}
 	
 	// set the shooting power if power turned on
 	// and if not, turn it off
 	if (m_shooterOn)
-		m_shootVictor->Set(m_shootPower);
+		m_shootVictor->Set(victor_linearize(m_shootPower));
 	else
 		m_shootVictor->Set(0.0);
 }

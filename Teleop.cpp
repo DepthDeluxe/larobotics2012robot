@@ -16,8 +16,8 @@ void Coriolis::Teleop(void)
 	/* Lo/Hi gear handling. */
 	CRITICAL_REGION(semaphore)
 	if (left.GetTrigger())
-		robotDrive.ChangeGear(LO_GEAR);
+		robotDrive.SetGear(LO_GEAR);
 	else if (right.GetTrigger())
-		robotDrive.ChangeGear(HI_GEAR);
+		robotDrive.SetGear(HI_GEAR);
 	END_REGION
 }

@@ -19,15 +19,15 @@ DriveBase::DriveBase(Victor* leftVictor, Victor* rightVictor, Solenoid* loGear, 
 
 void DriveBase::Drive(float leftPower, float rightPower)
 {
-	// set power values, left value is negative becasue motors are inverted
+	// set power values, left value is negative because motors are inverted
 	m_leftPower = -leftPower;
 	m_rightPower = rightPower;
 }
 
-void DriveBase::ChangeGear(int gear)
+void DriveBase::SetGear(int gear)
 {
 	// only adjust gear value if new set value is valid
-	if (gear == HI_GEAR | LO_GEAR)
+	if (gear == HI_GEAR || gear == LO_GEAR)
 		m_gear = gear;
 }
 
@@ -39,8 +39,8 @@ void DriveBase::Autonomous()
 void DriveBase::ControlThread()
 {
 	// set victors
-	m_leftVictor->Set(m_leftPower);
-	m_rightVictor->Set(m_rightPower);
+	m_leftVictor->Set(victor_linearize(m_leftPower));
+	m_rightVictor->Set(victor_linearize(m_rightPower));
 	
 	// set gears
 	if (m_gear == HI_GEAR)

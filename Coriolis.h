@@ -4,7 +4,7 @@
 #include "WPILib.h"
 #include "sysLib.h"
 
-#include "Libs/QueueManager.h"
+#include "Robot Modules/QueueManager.h"
 #include "Libs/Sockets.h"
 
 // Robot Modules
