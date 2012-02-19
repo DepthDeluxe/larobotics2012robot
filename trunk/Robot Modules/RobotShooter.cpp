@@ -2,7 +2,7 @@
 #define ROBOTSHOOTER_CPP_
 
 #include "RobotShooter.h"
-#include "../Utils.h"
+#include "../Utility/Utils.h"
 
 RobotShooter::RobotShooter(Victor* panVictor, Victor* tiltVictor, Victor* shootVictor,
 		PIDController* panControl, PIDController* tiltControl)
