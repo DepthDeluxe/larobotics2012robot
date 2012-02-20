@@ -13,25 +13,59 @@
 #define RS_TILT_I	1
 #define RS_TILT_D	1
 
+// structure that defines packet information
+struct RobotVisionPacket
+{
+	float PanOffset;
+	float Tilt;
+	float Speed;
+};
+
 //
 // This is the class that manages the robot's shooter code
 // it will receive udp data from the camera
 //
 class RobotShooter
 {
+public:
+	RobotShooter(Victor*, Victor*, Victor*, Victor*, Victor*, Relay*, PIDController*, PIDController*);
+	
+	// auto shoot function
+	void ProcessAuto();
+	
+	// manual shooter set values
+	void SetPanPower(float);
+	void SetTiltPower(float);
+	void SetShootPower(float);
+	
+	// other shoot functions
+	void EnableShooter(bool);
+	void Shoot();
+	
+	// ball intake
+	void IntakeBalls();
+	
+	// return functions
+	bool IsShooterOn();
+	
+	// function that sends variables to physical objects
+	void ControlThread();
+	
 private:
 	// victors
 	Victor*		m_panVictor;
 	Victor*		m_tiltVictor;
 	Victor*		m_shootVictor;
-	Victor*		m_rollerIntake;
+	Victor*		m_shootBBVictor;
+	Victor*		m_intakeRoller;
+	Relay*		m_shootRoller;
 	
 	// PID controllers
 	PIDController*	m_tiltControl;
 	PIDController*	m_panControl;
 	
 	float m_panSetpoint, m_tiltSetpoint;
-	float m_panSpeed, m_tiltSpeed;
+	float m_panPower, m_tiltPower;
 	float m_shootPower;
 	
 	// socket members goes here
@@ -41,18 +75,6 @@ private:
 	
 	bool m_shoot;
 	bool m_intakeBalls;
-	
-public:
-	RobotShooter(Victor*, Victor*, Victor*, Victor*, PIDController*, PIDController*);
-	
-	void ProcessAuto();
-	void ProcessManual(int, int, int);
-	
-	void SetShooterSpeed(float);
-	void EnableShooter(bool);
-	void Shoot();
-	
-	void ControlThread();
 };
 
 #endif /*ROBOTSHOOTER_H_*/
