@@ -12,26 +12,28 @@ BridgeTipper::BridgeTipper(Relay* bridgeTipControl, DigitalInput* bridgeTipUp, D
 	
 	// always start in the up position
 	stopped = true;
-	goingUp = false;
+	goingDown = true;
 }
 
 void BridgeTipper::Move()
 {
 	stopped = false;
-	goingUp = !goingUp;
+	goingDown = !goingDown;
 }
 
 void BridgeTipper::ControlThread()
 {
 	if (!stopped)
 	{
-		if (goingUp)
+		if (goingDown)
 		{
 			motorControl->Set(Relay::kForward);
+			stopped = !((bool)downLimit->Get());
 		}
 		else
 		{
 			motorControl->Set(Relay::kReverse);
+			stopped = !((bool)upLimit->Get());
 		}
 	}
 	else
