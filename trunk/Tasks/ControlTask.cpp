@@ -15,6 +15,9 @@ void Coriolis::ControlTask(void) {
 		// handle robotshooter
 		robotShooter.ControlThread();
 		
+		// handle bridgetipper
+		bridgeTipper.ControlThread();
+		
 		// update pidtuner
 		pidTuner.Run();
 		
