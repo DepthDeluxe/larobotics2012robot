@@ -26,13 +26,20 @@ Coriolis::Coriolis(void) :
 	serverThread("serverThread", (FUNCPTR) startThread),
 	leftDrive(4), rightDrive(5), left(1), right(2), loGear(4), hiGear(5),
 	panVictor(6), tiltVictor(7),
-	shootVictor(8),
+	shootVictor(3),
+	shootBainBotVictor(3),
+	intakeRoller(2),
+	shootRoller(2),
+	bridgeTipRelay(4),
 	panEncoder(5,6),
 	tiltPot(0),
+	bridgeTipUp(1),
+	bridgeTipDown(2),
 	panController(0, 0, 0, &panEncoder, &panVictor),
 	tiltController(0, 0, 0, &tiltPot, &tiltVictor),
 	robotDrive(&leftDrive, &rightDrive, &loGear, &hiGear),
-	robotShooter(&panVictor, &tiltVictor, &shootVictor, &panController, &tiltController),
+	robotShooter(&panVictor, &tiltVictor, &shootVictor, &shootBainBotVictor, &intakeRoller, &shootRoller, &panController, &tiltController),
+	bridgeTipper(&bridgeTipRelay, &bridgeTipUp, &bridgeTipDown),
 	pidTuner(&panController)
 {
 	printf("CORIOLIS: Initializing.\n");

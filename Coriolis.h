@@ -10,6 +10,7 @@
 // Robot Modules
 #include "Robot Modules/DriveBase.h"
 #include "Robot Modules/RobotShooter.h"
+#include "Robot Modules/BridgeTipper.h"
 
 // Utilities
 #include "Utility/PIDTuner.h"
@@ -37,10 +38,18 @@ private:
     	/* shooter motors */
         Victor	panVictor, tiltVictor;
         Victor	shootVictor;
+        Victor	shootBainBotVictor;
+        Victor	intakeRoller;
+        Relay	shootRoller;
+        
+        // bridge tipper relay
+        Relay	bridgeTipRelay;
         
         /* input devices */
         Encoder			panEncoder;
         AnalogChannel	tiltPot;
+        DigitalInput	bridgeTipUp;
+        DigitalInput	bridgeTipDown;
         
         /* pid control loops */
         PIDController	panController;
@@ -52,6 +61,7 @@ private:
         // robot modules declaration
         DriveBase		robotDrive;
         RobotShooter	robotShooter;
+        BridgeTipper	bridgeTipper;
         
         // debugging
         PIDTuner pidTuner;
