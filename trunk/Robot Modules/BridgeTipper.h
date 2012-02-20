@@ -18,7 +18,7 @@ private:
 	DigitalInput*	downLimit;
 	
 	bool stopped;
-	bool goingUp;
+	bool goingDown;
 };
 
 #endif /*BRIDGETIPPER_H_*/
