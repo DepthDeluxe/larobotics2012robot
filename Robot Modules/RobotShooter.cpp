@@ -4,13 +4,13 @@
 #include "RobotShooter.h"
 #include "../Utility/Utils.h"
 
-RobotShooter::RobotShooter(Victor* panVictor, Victor* tiltVictor, Victor* shootVictor,
+RobotShooter::RobotShooter(Jaguar* panJaguar, Jaguar* tiltJaguar, Victor* shootVictor,
 		Victor* shootBainBotVictor, Victor* intakeRoller, Relay* shootRoller,
 		PIDController* panControl, PIDController* tiltControl)
 {
 	// save pointers
-	m_panVictor = panVictor;
-	m_tiltVictor = tiltVictor;
+	m_panJaguar = panJaguar;
+	m_tiltJaguar = tiltJaguar;
 	m_shootVictor = shootVictor;
 	m_shootBBVictor = shootBainBotVictor;
 	m_intakeRoller = intakeRoller;
@@ -26,6 +26,20 @@ RobotShooter::RobotShooter(Victor* panVictor, Victor* tiltVictor, Victor* shootV
 	m_panSetpoint = 0;
 	m_tiltSetpoint = 0;
 	m_shootPower = 0;
+	m_panPower = 0;
+	m_tiltPower = 0;
+	
+	m_newData = false;
+	m_isAutoAim = false;
+	m_shooterOn = false;
+	m_shoot = false;
+	m_intakeBalls = false;
+	
+	// start with PID Controllers disabled
+	m_panControl->Disable();
+	m_tiltControl->Disable();
+	
+	dashboard = SmartDashboard::GetInstance();
 }
 
 void RobotShooter::ProcessAuto()
@@ -58,6 +72,11 @@ void RobotShooter::Shoot()
 	m_shoot = true;
 }
 
+void RobotShooter::IntakeBalls()
+{
+	m_intakeBalls = true;
+}
+
 bool RobotShooter::IsShooterOn()
 {
 	return m_shooterOn;
@@ -88,8 +107,11 @@ void RobotShooter::ControlThread()
 		}
 		
 		// set victor values
-		m_panVictor->Set(victor_linearize(m_panPower));
-		m_tiltVictor->Set(victor_linearize(m_panPower));
+		m_panJaguar->Set(victor_linearize(m_panPower));
+		m_tiltJaguar->Set(victor_linearize(m_tiltPower));
+		
+		dashboard->PutDouble("Pan Power", m_panPower);
+		dashboard->PutDouble("Tilt Power", m_tiltPower);
 	}
 	
 	// set the shooting power if power turned on
@@ -107,18 +129,23 @@ void RobotShooter::ControlThread()
 	
 	// intake roller
 	if (m_intakeBalls)
-	{
-		m_intakeRoller->Set(1.0);
+	{	
+		// return functions
+		m_intakeRoller->Set(-0.5);
+		m_intakeBalls = false;
 	}
 	else
 	{
 		m_intakeRoller->Set(0.0);
 	}
 	
+	dashboard->PutBoolean("IsShooting", m_shoot);
+	
 	// shooter roller
 	if (m_shoot)
 	{
 		m_shootRoller->Set(Relay::kForward);
+		m_shoot = false;
 	}
 	else
 	{

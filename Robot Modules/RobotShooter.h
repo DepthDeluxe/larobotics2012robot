@@ -28,7 +28,7 @@ struct RobotVisionPacket
 class RobotShooter
 {
 public:
-	RobotShooter(Victor*, Victor*, Victor*, Victor*, Victor*, Relay*, PIDController*, PIDController*);
+	RobotShooter(Jaguar*, Jaguar*, Victor*, Victor*, Victor*, Relay*, PIDController*, PIDController*);
 	
 	// auto shoot function
 	void ProcessAuto();
@@ -53,8 +53,8 @@ public:
 	
 private:
 	// victors
-	Victor*		m_panVictor;
-	Victor*		m_tiltVictor;
+	Jaguar*		m_panJaguar;
+	Jaguar*		m_tiltJaguar;
 	Victor*		m_shootVictor;
 	Victor*		m_shootBBVictor;
 	Victor*		m_intakeRoller;
@@ -63,6 +63,9 @@ private:
 	// PID controllers
 	PIDController*	m_tiltControl;
 	PIDController*	m_panControl;
+	
+	// smart dashboard
+	SmartDashboard* dashboard;
 	
 	float m_panSetpoint, m_tiltSetpoint;
 	float m_panPower, m_tiltPower;

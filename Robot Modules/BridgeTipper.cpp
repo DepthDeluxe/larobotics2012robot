@@ -13,6 +13,8 @@ BridgeTipper::BridgeTipper(Relay* bridgeTipControl, DigitalInput* bridgeTipUp, D
 	// always start in the up position
 	stopped = true;
 	goingDown = true;
+	
+	dashboard = SmartDashboard::GetInstance();
 }
 
 void BridgeTipper::Move()
@@ -40,6 +42,9 @@ void BridgeTipper::ControlThread()
 	{
 		motorControl->Set(Relay::kOff);
 	}
+	
+	dashboard->PutInt("Down Limit Switch", downLimit->Get());
+	dashboard->PutInt("Up Limit Switch", upLimit->Get());
 }
 
 #endif /*BRIDGETIPPER_CPP_*/
