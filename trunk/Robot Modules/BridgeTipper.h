@@ -17,6 +17,8 @@ private:
 	DigitalInput*	upLimit;
 	DigitalInput*	downLimit;
 	
+	SmartDashboard* dashboard;
+	
 	bool stopped;
 	bool goingDown;
 };

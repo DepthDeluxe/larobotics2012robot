@@ -36,7 +36,7 @@ private:
         Solenoid	loGear, hiGear;
         
     	/* shooter motors */
-        Victor	panVictor, tiltVictor;
+        Jaguar	panJaguar, tiltJaguar;
         Victor	shootVictor;
         Victor	shootBainBotVictor;
         Victor	intakeRoller;

@@ -22,22 +22,23 @@ void Coriolis::Teleop(void)
 	if (right.GetTrigger())
 	{
 		robotShooter.IntakeBalls();
-		
-		// if shooter is sped up, shoot
-		if (robotShooter.IsShooterOn())
-			robotShooter.Shoot();
+		robotShooter.Shoot();
 	}
 	
+	// set pan and tilt variables
+	robotShooter.SetPanPower(left.GetX());
+	robotShooter.SetTiltPower(right.GetX());
+	
 	// if right button #3 pressed, toggle bridge tipper
-	if (right.GetRawButton(3))
+	if (left.GetRawButton(3))
 		bridgeTipper.Move();
 	END_REGION
 	
 	/* Lo/Hi gear handling. */
 	CRITICAL_REGION(semaphore)
-	if (left.GetTrigger())
+	if (left.GetRawButton(2))
 		robotDrive.SetGear(LO_GEAR);
-	else if (right.GetTrigger())
+	else if (right.GetRawButton(2))
 		robotDrive.SetGear(HI_GEAR);
 	END_REGION
 }
