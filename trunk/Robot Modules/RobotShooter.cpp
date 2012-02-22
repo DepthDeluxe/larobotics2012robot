@@ -6,7 +6,9 @@
 
 RobotShooter::RobotShooter(Jaguar* panJaguar, Jaguar* tiltJaguar, Victor* shootVictor,
 		Victor* shootBainBotVictor, Victor* intakeRoller, Relay* shootRoller,
-		PIDController* panControl, PIDController* tiltControl)
+		AnalogChannel* panPot, AnalogChannel* tiltPot) :
+			panControl(RS_PAN_P, RS_PAN_I, RS_PAN_D, panPot, panJaguar),
+			tiltControl(RS_TILT_P, RS_TILT_I, RS_TILT_D, tiltPot, tiltJaguar)
 {
 	// save pointers
 	m_panJaguar = panJaguar;
@@ -15,111 +17,101 @@ RobotShooter::RobotShooter(Jaguar* panJaguar, Jaguar* tiltJaguar, Victor* shootV
 	m_shootBBVictor = shootBainBotVictor;
 	m_intakeRoller = intakeRoller;
 	m_shootRoller = shootRoller;
-	m_panControl = panControl;
-	m_tiltControl = tiltControl;
+	m_panPot = panPot;
+	m_tiltPot = tiltPot;
 	
-	// set PID values
-	m_panControl->SetPID(RS_PAN_P, RS_PAN_I, RS_PAN_D);
-	m_tiltControl->SetPID(RS_TILT_P, RS_TILT_I, RS_TILT_D);
+	// enable pids
+	panControl.Enable();
+	
+	// disable tilt pid because control loop is unstable
+	tiltControl.Disable();
+	
+	// set default PID values
+	panControl.SetSetpoint(RS_PAN_MID);
+	tiltControl.SetSetpoint(RS_TILT_MIN);
 	
 	// init variables
-	m_panSetpoint = 0;
-	m_tiltSetpoint = 0;
-	m_shootPower = 0;
-	m_panPower = 0;
-	m_tiltPower = 0;
+	panSetpoint = 367;
+	tiltSetpoint = 0;
+	shootPower = 0;
+	panPower = 0;
+	tiltPower = 0;
 	
-	m_newData = false;
-	m_isAutoAim = false;
-	m_shooterOn = false;
-	m_shoot = false;
-	m_intakeBalls = false;
+	// all bools are initialized false
+	newData = false;
+	isAutoAim = false;
+	shooterOn = false;
+	shoot = false;
+	intakeBalls = false;
 	
-	// start with PID Controllers disabled
-	m_panControl->Disable();
-	m_tiltControl->Disable();
-	
+	// load instance of smartdashboard
 	dashboard = SmartDashboard::GetInstance();
-}
-
-void RobotShooter::ProcessAuto()
-{
-	
 }
 
 void RobotShooter::SetPanPower(float power)
 {
-	m_panPower = power;
+	panPower = power;
 }
 
 void RobotShooter::SetTiltPower(float power)
 {
-	m_tiltPower = power;
+	tiltPower = power;
 }
 
 void RobotShooter::SetShootPower(float power)
 {
-	m_shootPower = power;
+	shootPower = power;
+}
+
+void RobotShooter::SetAutomated(bool automated)
+{
+	isAutoAim = automated;
 }
 
 void RobotShooter::EnableShooter(bool isactivated)
 {
-	m_shooterOn = isactivated;
+	shooterOn = isactivated;
 }
 
 void RobotShooter::Shoot()
 {
-	m_shoot = true;
+	shoot = true;
 }
 
 void RobotShooter::IntakeBalls()
 {
-	m_intakeBalls = true;
+	intakeBalls = true;
 }
 
 bool RobotShooter::IsShooterOn()
 {
-	return m_shooterOn;
+	return shooterOn;
 }
 
 void RobotShooter::ControlThread()
 {
-	if (m_isAutoAim)
-	{
-		// check to see if control is not enabled
-		if (!m_panControl->IsEnabled() || !m_tiltControl->IsEnabled())
-		{
-			m_panControl->Enable();
-			m_panControl->Enable();
-		}
-		
-		// set setpoints on pan and tilt controls
-		m_panControl->SetSetpoint(m_panSetpoint);
-		m_tiltControl->SetSetpoint(m_tiltSetpoint);
+	if (isAutoAim)
+	{		
+		panControl.Enable();
 	}
 	else
-	{
-		// check to see if control is enabled
-		if (m_panControl->IsEnabled() || m_tiltControl->IsEnabled())
-		{
-			m_panControl->Disable();
-			m_tiltControl->Disable();
-		}
+	{	
+		panControl.Disable();
 		
 		// set victor values
-		m_panJaguar->Set(victor_linearize(m_panPower));
-		m_tiltJaguar->Set(victor_linearize(m_tiltPower));
+		m_panJaguar->Set(victor_linearize(panPower));
+		m_tiltJaguar->Set(victor_linearize(tiltPower));
 		
-		dashboard->PutDouble("Pan Power", m_panPower);
-		dashboard->PutDouble("Tilt Power", m_tiltPower);
+		dashboard->PutDouble("Pan Power", panPower);
+		dashboard->PutDouble("Tilt Power", tiltPower);
 	}
 	
 	// set the shooting power if power turned on
 	// and if not, turn it off
-	if (m_shooterOn)
+	if (shooterOn)
 	{
-		m_shootVictor->Set(victor_linearize(m_shootPower));
-		m_shootBBVictor->Set(victor_linearize(m_shootPower));
+		m_shootVictor->Set(victor_linearize(shootPower));
+		m_shootBBVictor->Set(victor_linearize(shootPower));
 	}
 	else
 	{
@@ -128,29 +120,33 @@ void RobotShooter::ControlThread()
 	}
 	
 	// intake roller
-	if (m_intakeBalls)
+	if (intakeBalls)
 	{	
 		// return functions
 		m_intakeRoller->Set(-0.5);
-		m_intakeBalls = false;
+		intakeBalls = false;
 	}
 	else
 	{
 		m_intakeRoller->Set(0.0);
 	}
 	
-	dashboard->PutBoolean("IsShooting", m_shoot);
+	dashboard->PutBoolean("IsShooting", shoot);
 	
 	// shooter roller
-	if (m_shoot)
+	if (shoot)
 	{
 		m_shootRoller->Set(Relay::kForward);
-		m_shoot = false;
+		shoot = false;
 	}
 	else
 	{
 		m_shootRoller->Set(Relay::kOff);
 	}
+	
+	// put other dashboard values
+	dashboard->PutInt("Pan Value", m_panPot->GetValue());
+	dashboard->PutInt("Tilt Value", m_tiltPot->GetValue());
 }
 
 #endif /*ROBOTSHOOTER_CPP_*/
