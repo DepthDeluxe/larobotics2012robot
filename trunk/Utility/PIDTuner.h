@@ -13,9 +13,8 @@ public:
 	void Run();
 	
 	// set functions
-	void SetPIDRange(float, float);
-	void SetSetpointRange(float, float);
 	void SetSetpoint(float);
+	void SetPIDRange(float);
 	
 	// get functions
 	float GetP();
@@ -38,11 +37,8 @@ private:
 	float I;
 	float D;
 	float setpoint;
-	float minPIDValue;
-	float maxPIDValue;
-	float pidValMultiplier;
-	float minSetpointValue;
-	float maxSetpointValue;
-	float setpointValMultiplier;
+	float pidScaleFactor;
+	float setpointMin;
+	float setpointMax;
 };
 #endif
