@@ -32,6 +32,11 @@ void Coriolis::Teleop(void)
 	// if right button #3 pressed, toggle bridge tipper
 	if (left.GetRawButton(3))
 		bridgeTipper.Move();
+	
+	if (right.GetRawButton(11))
+		autoAimToggle = !autoAimToggle;
+	robotShooter.SetAutomated(autoAimToggle);
+		
 	END_REGION
 	
 	/* Lo/Hi gear handling. */
