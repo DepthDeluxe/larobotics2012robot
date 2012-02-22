@@ -5,13 +5,22 @@
 #include "WPILib.h"
 #include "sysLib.h"
 
-#define RS_PAN_P	1
-#define RS_PAN_I	1
-#define RS_PAN_D	1
+#include "../Utility/PIDTuner.h"
 
-#define RS_TILT_P	1
-#define RS_TILT_I	1
-#define RS_TILT_D	1
+#define RS_PAN_P	-0.02
+#define RS_PAN_I	0.0
+#define RS_PAN_D	0.0
+
+#define RS_TILT_P	-0.08
+#define RS_TILT_I	0
+#define RS_TILT_D	-0.08
+
+#define RS_PAN_MIN	64
+#define RS_PAN_MID	454
+#define RS_PAN_MAX	825
+
+#define RS_TILT_MIN	238
+#define RS_TILT_MAX	975
 
 // structure that defines packet information
 struct RobotVisionPacket
@@ -28,15 +37,15 @@ struct RobotVisionPacket
 class RobotShooter
 {
 public:
-	RobotShooter(Jaguar*, Jaguar*, Victor*, Victor*, Victor*, Relay*, PIDController*, PIDController*);
-	
-	// auto shoot function
-	void ProcessAuto();
+	RobotShooter(Jaguar*, Jaguar*, Victor*, Victor*, Victor*, Relay*, AnalogChannel*, AnalogChannel*);
 	
 	// manual shooter set values
 	void SetPanPower(float);
 	void SetTiltPower(float);
 	void SetShootPower(float);
+	
+	// enable auto
+	void SetAutomated(bool);
 	
 	// other shoot functions
 	void EnableShooter(bool);
@@ -60,24 +69,28 @@ private:
 	Victor*		m_intakeRoller;
 	Relay*		m_shootRoller;
 	
-	// PID controllers
-	PIDController*	m_tiltControl;
-	PIDController*	m_panControl;
+	// Analog Inputs
+	AnalogChannel* m_panPot;
+	AnalogChannel* m_tiltPot;
 	
 	// smart dashboard
 	SmartDashboard* dashboard;
 	
-	float m_panSetpoint, m_tiltSetpoint;
-	float m_panPower, m_tiltPower;
-	float m_shootPower;
+	// PID Controllers
+	PIDController	panControl;
+	PIDController	tiltControl;
+	
+	float panSetpoint, tiltSetpoint;
+	float panPower, tiltPower;
+	float shootPower;
 	
 	// socket members goes here
-	bool m_newData;
-	bool m_isAutoAim;
-	bool m_shooterOn;
+	bool newData;
+	bool isAutoAim;
+	bool shooterOn;
 	
-	bool m_shoot;
-	bool m_intakeBalls;
+	bool shoot;
+	bool intakeBalls;
 };
 
 #endif /*ROBOTSHOOTER_H_*/
