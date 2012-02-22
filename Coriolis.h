@@ -46,14 +46,10 @@ private:
         Relay	bridgeTipRelay;
         
         /* input devices */
-        Encoder			panEncoder;
+        AnalogChannel	panPot;
         AnalogChannel	tiltPot;
         DigitalInput	bridgeTipUp;
         DigitalInput	bridgeTipDown;
-        
-        /* pid control loops */
-        PIDController	panController;
-        PIDController	tiltController;
         
         /* Robot specific stuff. */
         int imageX, imageY;
@@ -63,8 +59,8 @@ private:
         RobotShooter	robotShooter;
         BridgeTipper	bridgeTipper;
         
-        // debugging
-        PIDTuner pidTuner;
+        // soft varibles
+        bool autoAimToggle;
 };
 
 #endif /*CORIOLIS_H_*/
