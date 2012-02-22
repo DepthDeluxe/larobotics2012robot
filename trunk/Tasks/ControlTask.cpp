@@ -18,9 +18,6 @@ void Coriolis::ControlTask(void) {
 		// handle bridgetipper
 		bridgeTipper.ControlThread();
 		
-		// update pidtuner
-		pidTuner.Run();
-		
 		END_REGION
 		/************************/
 		
