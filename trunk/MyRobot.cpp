@@ -27,20 +27,17 @@ Coriolis::Coriolis(void) :
 	leftDrive(4), rightDrive(5), left(1), right(2), loGear(4), hiGear(5),
 	panJaguar(6), tiltJaguar(8),
 	shootVictor(3),
-	shootBainBotVictor(2),
+	shootBainBotVictor(1),
 	intakeRoller(7),
 	shootRoller(1),
 	bridgeTipRelay(2),
-	panEncoder(5,6),
-	tiltPot(0),
+	panPot(1),
+	tiltPot(2),
 	bridgeTipUp(10),
 	bridgeTipDown(11),
-	panController(0, 0, 0, &panEncoder, &panJaguar),
-	tiltController(0, 0, 0, &tiltPot, &tiltJaguar),
 	robotDrive(&leftDrive, &rightDrive, &loGear, &hiGear),
-	robotShooter(&panJaguar, &tiltJaguar, &shootVictor, &shootBainBotVictor, &intakeRoller, &shootRoller, &panController, &tiltController),
-	bridgeTipper(&bridgeTipRelay, &bridgeTipUp, &bridgeTipDown),
-	pidTuner(&panController)
+	robotShooter(&panJaguar, &tiltJaguar, &shootVictor, &shootBainBotVictor, &intakeRoller, &shootRoller, &panPot, &tiltPot),
+	bridgeTipper(&bridgeTipRelay, &bridgeTipUp, &bridgeTipDown)
 {
 	printf("CORIOLIS: Initializing.\n");
 	semaphore = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
